@@ -1,0 +1,6 @@
+#!/bin/bash
+
+SWAP_PATH="$HOME/.cache/vim/swap"
+
+echo "Clearing swap files from ${SWAP_PATH}"
+rm $SWAP_PATH/*.swp &> /dev/null
