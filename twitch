@@ -1,0 +1,89 @@
+#!/usr/bin/bash
+
+# Awk script for parsing response from Twitch
+awk_script='
+BEGIN { regex="\"isLiveBroadcast\":true" }
+{
+	if (match($0, regex))
+		print "online";
+	else
+		print "offline";
+}'
+
+# default config variables
+base=https://www.twitch.tv/
+curl_cmd="curl -s -H 'Cache-Control: no-cache, no-store'"
+player=mpv
+quality=best
+
+# Update this array with streamers you would like checked
+names=(
+	abney317
+	liam
+	obiyosrl
+	spikevegeta
+	zfg1
+)
+
+# Args passed to script are added to the names array
+for arg in $@
+do
+	names+=($arg)
+done
+
+online=()
+echo -e "Checking streamer online status...\n"
+
+# Check the current status of streamers in 'names' array
+for name in ${names[@]}
+do
+	status=$($curl_cmd $base$name | awk "$awk_script" )
+	if [ $status == "online" ]
+	then
+		online+=($name)
+	fi
+done
+
+# Exit early if no streamers are online
+if [ ${#online[@]} == 0 ]
+then
+	echo "No streamers are currently online!"
+	echo "Try again later!"
+	exit
+fi
+
+# Loop until user gives us a valid choice or 'exit'
+while [ true ]
+do
+	echo "Who would you like to watch?"
+	echo -e "${online[@]}\n"
+	read -p "> " choice
+
+	if [ $choice == "exit" ]
+	then
+		exit
+	fi
+
+	index=-1
+	for ((i=0; i < ${#online[@]}; i++))
+	do
+		if [ $choice == ${online[i]} ]
+		then
+			index=$i
+			break
+		fi
+	done
+
+	if [ $index == -1 ]
+	then
+		echo -e "\nI'm sorry. I could not complete that request."
+		echo -e "Let's try that again...\n"
+	else
+		break
+	fi
+done
+
+# Send choice to streamlink and wait for it to fully initialize before exiting
+echo -e "\nGood choice! Preparing the stream...\n"
+streamlink -p $player $base$choice $quality &
+sleep 2
