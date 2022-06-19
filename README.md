@@ -1,5 +1,4 @@
 # Bash Scripts
----
 
 This is a repo containing various Bash scripts I've written for my own personal use. They are free
 to use but I will provide no support if you encounter difficulty running them on your system. That
