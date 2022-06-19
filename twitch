@@ -14,6 +14,7 @@
 # default config variables
 base=https://www.twitch.tv/
 curl_cmd="curl -s -H 'Cache-Control: no-cache, no-store'"
+head_cmd="head --bytes=8192"
 player=mpv
 quality=best
 
@@ -43,7 +44,7 @@ echo -e "Checking streamer online status...\n"
 # Check the current status of streamers in 'names' array
 for name in ${names[@]}
 do
-	status=$($curl_cmd $base$name | awk "$awk_script" )
+	status=$($curl_cmd $base$name | $head_cmd | awk "$awk_script" )
 	if [ $status == "online" ]
 	then
 		online+=($name)
