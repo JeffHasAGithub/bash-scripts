@@ -1,5 +1,22 @@
 #!/usr/bin/bash
 
+# DEPENDENCIES
+# awk
+# curl
+# streamlink
+# A compatible video player (check streamlink docs)
+
+# USAGE
+# Add streamers whom you would like to 'follow' by adding them to the names array.
+# Arguments passed to the script will be appended to names array for that run of the script.
+# In lieu of passing flags/options to the script, adjust config vars below to suit your needs.
+
+# default config variables
+base=https://www.twitch.tv/
+curl_cmd="curl -s -H 'Cache-Control: no-cache, no-store'"
+player=mpv
+quality=best
+
 # Awk script for parsing response from Twitch
 awk_script='
 BEGIN { regex="\"isLiveBroadcast\":true" }
@@ -10,19 +27,8 @@ BEGIN { regex="\"isLiveBroadcast\":true" }
 		print "offline";
 }'
 
-# default config variables
-base=https://www.twitch.tv/
-curl_cmd="curl -s -H 'Cache-Control: no-cache, no-store'"
-player=mpv
-quality=best
-
 # Update this array with streamers you would like checked
 names=(
-	abney317
-	liam
-	obiyosrl
-	spikevegeta
-	zfg1
 )
 
 # Args passed to script are added to the names array
